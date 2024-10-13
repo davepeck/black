@@ -10,7 +10,7 @@ from typing import Final, Match, Pattern
 from black._width_table import WIDTH_TABLE
 from blib2to3.pytree import Leaf
 
-STRING_PREFIX_CHARS: Final = "furbFURB"  # All possible string prefix characters.
+STRING_PREFIX_CHARS: Final = "furtbFURTB"  # All possible string prefix characters.
 STRING_PREFIX_RE: Final = re.compile(
     r"^([" + STRING_PREFIX_CHARS + r"]*)(.*)$", re.DOTALL
 )
