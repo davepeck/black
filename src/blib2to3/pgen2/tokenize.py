@@ -3,6 +3,9 @@
 
 # mypy: allow-untyped-defs, allow-untyped-calls
 
+# HACK hacked to support PEP 750 t-strings, but not in a particularly nice way
+# (yet): I don't actually distinguish between f-strings and t-strings -Dave
+
 """Tokenization help for Python programs.
 
 generate_tokens(readline) is a generator that breaks a stream of
@@ -116,7 +119,7 @@ Single3 = r"(?:\\.|'(?!'')|[^'\\])*'''"
 # Tail end of """ string.
 Double3 = r'(?:\\.|"(?!"")|[^"\\])*"""'
 _litprefix = r"(?:[uUrRbB]|[rR][bB]|[bBuU][rR])?"
-_fstringlitprefix = r"(?:rF|FR|Fr|fr|RF|F|rf|f|Rf|fR)"
+_fstringlitprefix = r"(?:rF|FR|Fr|fr|RF|F|rf|f|Rf|fR|rT|TR|Tr|tr|RT|T|rt|t|Rt|tR)"
 Triple = group(
     _litprefix + "'''",
     _litprefix + '"""',
@@ -192,7 +195,9 @@ double3prog = re.compile(Double3)
 double3prog_plus_lbrace = re.compile(group(Double3Lbrace, Double3))
 
 _strprefixes = _combinations("r", "R", "b", "B") | {"u", "U", "ur", "uR", "Ur", "UR"}
-_fstring_prefixes = _combinations("r", "R", "f", "F") - {"r", "R"}
+_actual_fstring_prefixes = _combinations("r", "R", "f", "F") - {"r", "R"}
+_actual_tstring_prefixes = _combinations("r", "R", "t", "T") - {"r", "R"}
+_fstring_prefixes = _actual_fstring_prefixes | _actual_tstring_prefixes
 
 endprogs: Final = {
     "'": singleprog,
